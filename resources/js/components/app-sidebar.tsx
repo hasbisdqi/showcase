@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid, Users as UsersIcon } from 'lucide-react';
+import { BookOpen, FolderGit2, LayoutGrid, Users as UsersIcon, Shield } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -27,6 +27,11 @@ const mainNavItems: NavItem[] = [
         title: 'Users',
         href: users.index(),
         icon: UsersIcon,
+    },
+    {
+        title: 'Roles & Permissions',
+        href: '/roles-permissions',
+        icon: Shield,
     },
 ];
 

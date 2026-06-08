@@ -21,6 +21,16 @@ class DatabaseSeeder extends Seeder
         $adminRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Admin']);
         $userRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'User']);
 
+        // Seed standard permissions
+        $permissions = ['view users', 'create users', 'edit users', 'delete users', 'manage roles'];
+        foreach ($permissions as $permissionName) {
+            \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $permissionName]);
+        }
+
+        // Sync permissions to roles
+        $adminRole->syncPermissions(\Spatie\Permission\Models\Permission::all());
+        $userRole->syncPermissions(['view users']);
+
         $admin = User::factory()->create([
             'name' => 'Test Admin',
             'email' => 'admin@example.com',
