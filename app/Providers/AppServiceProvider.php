@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
+use App\Policies\UserPolicy;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -24,6 +28,19 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        // Implicitly grant "Admin" role all permissions
+        Gate::before(function ($user, $ability) {
+            return $user->hasRole('Admin') ? true : null;
+        });
+
+        // Register model policies
+        Gate::policy(User::class, UserPolicy::class);
+
+        // Define custom gates
+        Gate::define('manage-roles', function (User $user) {
+            return $user->hasPermissionTo('manage roles');
+        });
     }
 
     /**

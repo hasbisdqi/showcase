@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -14,6 +15,8 @@ class RolePermissionController extends Controller
      */
     public function index()
     {
+        Gate::authorize('manage-roles');
+
         $roles = Role::with('permissions')->get();
         $permissions = Permission::all();
 
@@ -28,6 +31,8 @@ class RolePermissionController extends Controller
      */
     public function storeRole(Request $request)
     {
+        Gate::authorize('manage-roles');
+
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
         ]);
@@ -44,6 +49,8 @@ class RolePermissionController extends Controller
      */
     public function updatePermissions(Request $request, Role $role)
     {
+        Gate::authorize('manage-roles');
+
         $validated = $request->validate([
             'permissions' => 'array|nullable',
             'permissions.*' => 'string|exists:permissions,name',
