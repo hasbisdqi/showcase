@@ -229,7 +229,6 @@ export default function PostsIndex({ posts, categories = [], tags = [], filters 
                                         <div className="absolute top-3 left-3">
                                             <Badge
                                                 variant={post.status === 'Published' ? 'default' : 'secondary'}
-                                                className="backdrop-blur-md bg-opacity-95"
                                             >
                                                 {post.status}
                                             </Badge>
