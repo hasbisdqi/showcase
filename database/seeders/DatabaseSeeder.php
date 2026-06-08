@@ -15,11 +15,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Reset cached roles and permissions
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        User::factory()->create([
+        $adminRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Admin']);
+        $userRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'User']);
+
+        $admin = User::factory()->create([
+            'name' => 'Test Admin',
+            'email' => 'admin@example.com',
+        ]);
+        $admin->assignRole($adminRole);
+
+        $testUser = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+        $testUser->assignRole($userRole);
+
+        // Generate 50 mock users and assign them the 'User' role
+        User::factory(50)->create()->each(function ($user) use ($userRole) {
+            $user->assignRole($userRole);
+        });
     }
 }
