@@ -22,20 +22,24 @@ interface PaginationInfo {
     per_page: number;
 }
 
-interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[];
+interface DataTableProps<TData> {
+    columns: ColumnDef<TData, any>[];
     data: TData[];
+
     searchPlaceholder?: string;
     searchValue?: string;
     onSearchChange?: (value: string) => void;
+
     perPageValue?: number;
     onPerPageChange?: (value: number) => void;
+
     pagination?: PaginationInfo;
     onPageChange?: (url: string) => void;
+
     headerActions?: React.ReactNode;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData>({
     columns,
     data,
     searchPlaceholder = 'Search...',
@@ -46,7 +50,7 @@ export function DataTable<TData, TValue>({
     pagination,
     onPageChange,
     headerActions,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TData>) {
     const table = useReactTable({
         data,
         columns,
@@ -92,15 +96,15 @@ export function DataTable<TData, TValue>({
                         </div>
                     )}
                 </div>
-                
+
                 <div className="flex items-center gap-4 self-end sm:self-auto">
                     {headerActions}
-                    
+
                     {perPageValue !== undefined && onPerPageChange !== undefined && (
                         <div className="flex items-center gap-2">
                             <span className="text-xs text-muted-foreground whitespace-nowrap">Rows per page:</span>
                             <Select value={String(perPageValue)} onValueChange={(val) => onPerPageChange(Number(val))}>
-                                <SelectTrigger className="w-[80px]">
+                                <SelectTrigger className="w-20">
                                     <SelectValue placeholder={String(perPageValue)} />
                                 </SelectTrigger>
                                 <SelectContent>

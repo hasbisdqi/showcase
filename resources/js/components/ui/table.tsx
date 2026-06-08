@@ -49,7 +49,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
 );
 TableRow.displayName = 'TableRow';
 
-const TableHead = React.forwardRef<HTMLTableCellElement, React.ThAttributes<HTMLTableCellElement>>(
+const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<HTMLTableCellElement>>(
     ({ className, ...props }, ref) => (
         <th
             ref={ref}
@@ -63,7 +63,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThAttributes<HTML
 );
 TableHead.displayName = 'TableHead';
 
-const TableCell = React.forwardRef<HTMLTableCellElement, React.TdAttributes<HTMLTableCellElement>>(
+const TableCell = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<HTMLTableCellElement>>(
     ({ className, ...props }, ref) => (
         <td ref={ref} className={cn('p-4 align-middle has-[[role=checkbox]]:pr-0', className)} {...props} />
     ),
