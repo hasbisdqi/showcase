@@ -10,7 +10,9 @@ use Illuminate\Validation\Rules\Password;
 
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
+use App\Models\Post;
 use App\Policies\UserPolicy;
+use App\Policies\PostPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -40,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Register model policies
         Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Post::class, PostPolicy::class);
 
         // Define custom gates
         Gate::define('manage-roles', function (User $user) {

@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid, Users as UsersIcon, Shield } from 'lucide-react';
+import { BookOpen, FolderGit2, LayoutGrid, Users as UsersIcon, Shield, FileText } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -45,6 +45,11 @@ export function AppSidebar() {
             title: 'Dashboard',
             href: dashboard(),
             icon: LayoutGrid,
+        },
+        {
+            title: 'Posts',
+            href: '/posts',
+            icon: FileText,
         },
     ];
 
