@@ -4,6 +4,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PostController::class, 'welcome'])->name('home');
@@ -12,7 +13,7 @@ Route::get('blog', [PostController::class, 'indexPublic'])->name('blog.index');
 Route::get('blog/{slug}', [PostController::class, 'showPublic'])->name('posts.show-public');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('users', UserController::class);
     Route::resource('posts', PostController::class);
