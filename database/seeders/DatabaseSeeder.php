@@ -22,14 +22,19 @@ class DatabaseSeeder extends Seeder
         $userRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'User']);
 
         // Seed standard permissions
-        $permissions = ['view users', 'create users', 'edit users', 'delete users', 'manage roles'];
+        $permissions = [
+            'view users', 'create users', 'edit users', 'delete users',
+            'manage roles',
+            'create_posts', 'delete_posts',
+            'send_messages',
+        ];
         foreach ($permissions as $permissionName) {
             \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $permissionName]);
         }
 
         // Sync permissions to roles
         $adminRole->syncPermissions(\Spatie\Permission\Models\Permission::all());
-        $userRole->syncPermissions(['view users']);
+        $userRole->syncPermissions(['view users', 'create_posts', 'delete_posts', 'send_messages']);
 
         $admin = User::factory()->create([
             'name' => 'Test Admin',

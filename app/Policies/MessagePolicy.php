@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
+use App\Models\Message;
 use App\Models\User;
-use App\Models\Post;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class PostPolicy
+class MessagePolicy
 {
     use HandlesAuthorization;
 
@@ -27,47 +27,38 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view any messages (access chat).
      */
-    public function viewAny(?User $user): bool
+    public function viewAny(User $user): bool
     {
-        return true;
+        return $this->hasPermissionSafe($user, 'send_messages');
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view a specific message.
      */
-    public function view(?User $user, Post $post): bool
+    public function view(User $user, Message $message): bool
     {
-        if ($post->status === 'Published') {
-            return true;
-        }
-
-        return $user && ($user->id === $post->user_id || $user->hasRole('Admin'));
+        // Can view if sender, receiver, or general room participant
+        return $message->room === 'general'
+            || $user->id === $message->user_id
+            || $user->id === $message->receiver_id;
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create messages.
      */
     public function create(User $user): bool
     {
-        return $this->hasPermissionSafe($user, 'create_posts');
+        return $this->hasPermissionSafe($user, 'send_messages');
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can delete the message.
      */
-    public function update(User $user, Post $post): bool
+    public function delete(User $user, Message $message): bool
     {
-        return $user->id === $post->user_id;
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Post $post): bool
-    {
-        return $user->id === $post->user_id && $this->hasPermissionSafe($user, 'delete_posts');
+        return $user->id === $message->user_id;
     }
 
     /**

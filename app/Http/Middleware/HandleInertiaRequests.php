@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Models\Message;
+use App\Models\Post;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -43,8 +45,10 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $user,
                 'can' => $user ? [
-                    'view_users' => $user->can('viewAny', \App\Models\User::class),
-                    'manage_roles' => $user->can('manage-roles'),
+                    'view_users'    => $user->can('viewAny', \App\Models\User::class),
+                    'manage_roles'  => $user->can('manage-roles'),
+                    'send_messages' => $user->can('create', \App\Models\Message::class),
+                    'create_posts'  => $user->can('create', \App\Models\Post::class),
                 ] : [],
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',

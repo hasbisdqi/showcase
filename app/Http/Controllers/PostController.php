@@ -151,6 +151,64 @@ class PostController extends Controller
     }
 
     /**
+     * Display the landing / welcome page.
+     */
+    public function welcome()
+    {
+        $latestPosts = Post::with(['author', 'categories'])
+            ->where('status', 'Published')
+            ->whereNotNull('published_at')
+            ->orderBy('published_at', 'desc')
+            ->take(3)
+            ->get();
+
+        return Inertia::render('welcome', [
+            'latestPosts' => $latestPosts,
+        ]);
+    }
+
+    /**
+     * Display a public listing of published posts.
+     */
+    public function indexPublic(Request $request)
+    {
+        $query = Post::with(['author', 'categories', 'tags'])
+            ->where('status', 'Published')
+            ->whereNotNull('published_at');
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($search) . '%'])
+                  ->orWhereRaw('LOWER(body) LIKE ?', ['%' . strtolower($search) . '%']);
+            });
+        }
+
+        if ($request->filled('category')) {
+            $categoryId = $request->input('category');
+            $query->whereHas('categories', function ($q) use ($categoryId) {
+                $q->where('categories.id', $categoryId);
+            });
+        }
+
+        $posts = $query->orderBy('published_at', 'desc')
+            ->paginate($request->input('per_page', 9))
+            ->withQueryString();
+
+        $categories = Category::all(['id', 'name']);
+
+        return Inertia::render('blog/index', [
+            'posts'      => $posts,
+            'categories' => $categories,
+            'filters'    => [
+                'search'   => $request->input('search'),
+                'category' => $request->input('category'),
+                'per_page' => (int) $request->input('per_page', 9),
+            ],
+        ]);
+    }
+
+    /**
      * Display the specified resource for the public.
      */
     public function showPublic(string $slug)
