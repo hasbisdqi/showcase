@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { BookOpen, FolderGit2, LayoutGrid, Users as UsersIcon, Shield } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -17,24 +17,6 @@ import { dashboard } from '@/routes';
 import users from '@/routes/users';
 import type { NavItem } from '@/types';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Users',
-        href: users.index(),
-        icon: UsersIcon,
-    },
-    {
-        title: 'Roles & Permissions',
-        href: '/roles-permissions',
-        icon: Shield,
-    },
-];
-
 const footerNavItems: NavItem[] = [
     {
         title: 'Repository',
@@ -49,6 +31,39 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage().props as unknown as {
+        auth: {
+            can?: {
+                view_users?: boolean;
+                manage_roles?: boolean;
+            };
+        };
+    };
+
+    const mainNavItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+    ];
+
+    if (auth.can?.view_users) {
+        mainNavItems.push({
+            title: 'Users',
+            href: users.index(),
+            icon: UsersIcon,
+        });
+    }
+
+    if (auth.can?.manage_roles) {
+        mainNavItems.push({
+            title: 'Roles & Permissions',
+            href: '/roles-permissions',
+            icon: Shield,
+        });
+    }
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>

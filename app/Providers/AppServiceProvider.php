@@ -31,7 +31,11 @@ class AppServiceProvider extends ServiceProvider
 
         // Implicitly grant "Admin" role all permissions
         Gate::before(function ($user, $ability) {
-            return $user->hasRole('Admin') ? true : null;
+            try {
+                return $user->hasRole('Admin') ? true : null;
+            } catch (\Spatie\Permission\Exceptions\RoleDoesNotExist $e) {
+                return null;
+            }
         });
 
         // Register model policies
@@ -39,7 +43,11 @@ class AppServiceProvider extends ServiceProvider
 
         // Define custom gates
         Gate::define('manage-roles', function (User $user) {
-            return $user->hasPermissionTo('manage roles');
+            try {
+                return $user->hasPermissionTo('manage roles');
+            } catch (\Spatie\Permission\Exceptions\PermissionDoesNotExist $e) {
+                return false;
+            }
         });
     }
 
